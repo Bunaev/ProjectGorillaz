@@ -1,6 +1,7 @@
 package com.javarush.questproject.comands;
 
 import com.javarush.questproject.entity.Role;
+import com.javarush.questproject.entity.User;
 import com.javarush.questproject.model.QuestService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,26 +24,26 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
+        User user = questService.getUser(login, password);
+        HttpSession session = req.getSession();
         if (req.getParameter("enter") != null) {
-            if (questService.authorize(login, password) && questService.getUser(questService.getUserId(login, password)).getRole().equals(Role.ADMIN)) {
-                req.setAttribute("authorized", true);
-                HttpSession session = req.getSession(true);
+            if (user != null && user.getRole().equals(Role.ADMIN)) {
+                session.setAttribute("authorized", true);
                 session.setMaxInactiveInterval(60*60*24);
-                session.setAttribute("id", questService.getUserId(login, password));
+                session.setAttribute("id", user.getId());
                 resp.sendRedirect("/admin");
-            } else if (questService.authorize(login, password) && questService.getUser(questService.getUserId(login, password)).getRole().equals(Role.USER)) {
-                req.setAttribute("authorized", true);
-                HttpSession session = req.getSession(true);
+            } else if (user != null && user.getRole().equals(Role.USER)) {
+                session.setAttribute("authorized", true);
                 session.setMaxInactiveInterval(60*60*24);
-                session.setAttribute("id", questService.getUserId(login, password));
-                resp.sendRedirect("/user?id=" + questService.getUserId(login, password));
-            } else if (questService.authorize(login, password) && questService.getUser(questService.getUserId(login, password)).getRole().equals(Role.BANNED)) {
-                req.setAttribute("authorized", true);
-                req.setAttribute("banned", true);
-                req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+                session.setAttribute("id", user.getId());
+                resp.sendRedirect("/user?id=" + user.getId());
+            } else if (user != null && user.getRole().equals(Role.BANNED)) {
+                session.setAttribute("authorized", true);
+                session.setAttribute("banned", true);
+                resp.sendRedirect("/login");
             } else {
-                req.setAttribute("authorized", false);
-                req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+                session.setAttribute("authorized", false);
+                resp.sendRedirect("/login");
             }
         }
     }

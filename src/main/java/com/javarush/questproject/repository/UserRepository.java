@@ -4,6 +4,7 @@ import com.javarush.questproject.entity.Role;
 import com.javarush.questproject.entity.User;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 @Getter
 public class UserRepository implements Repository {
@@ -47,10 +48,10 @@ public class UserRepository implements Repository {
         }
     }
     @Override
-    public Long getUserId(String login, String password) {
+    public User getUser(String login, String password) {
         for (User user : users) {
             if (user.getLogin().equalsIgnoreCase(login) && user.getPassword().equals(password)) {
-                return user.getId();
+                return user;
             }
         }
         return null;

@@ -13,25 +13,25 @@
     <button formmethod="post" id="allUsers" name="allUsers" value="allUsers" class="btn btn-success" style="display:inline-block">Показать всех пользователей</button>
     <button formmethod="post" id="questEdit" name="questEdit" class="btn btn-success" style="display:inline-block">Отредактировать квест</button>
     </br>
-    <c:if test="${requestScope.users!=null}">
-        <c:forEach var="user" items="${requestScope.users}">
+    <c:if test="${sessionScope.users!=null}">
+        <c:forEach var="user" items="${sessionScope.users}">
         <button formmethod="post" name="user" class="btn btn-success" style="display:inline-block; margin-top: 0;" value="${user.id}">${user.id} - ${user.username}</button>
     </c:forEach>
     </c:if>
-<c:if test="${requestScope.user!=null}">
-    <c:if test="${sessionScope.id==requestScope.user.id}">
+<c:if test="${sessionScope.user!=null}">
+    <c:if test="${sessionScope.id==sessionScope.user.id}">
         <fieldset class="userPage" style="margin-left: 15%">
             <form class="form-horizontal" method="post">
-                <legend class="legend">Данные пользователя: ${requestScope.user.username}</legend>
+                <legend class="legend">Данные пользователя: ${sessionScope.user.username}</legend>
                 </br>
-                <label class="legend"style="display: block;float: left;width: 80px;height: 15px;">ID: </label><input readonly class="input" name="id" value="${requestScope.user.id}">
+                <label class="legend"style="display: block;float: left;width: 80px;height: 15px;">ID: </label><input readonly class="input" name="id" value="${sessionScope.user.id}">
                 </br>
                 <label class="legend" style="display: block;float: left;width: 80px;height: 15px;" for="name">Имя: </label>
                 <input
                         id="name"
                         name="name"
                         type="text"
-                        value="${requestScope.user.username}"
+                        value="${sessionScope.user.username}"
                         class="input"
                         required="">
                 </br>
@@ -40,7 +40,7 @@
                         id="login"
                         name="login"
                         type="text"
-                        value="${requestScope.user.login}"
+                        value="${sessionScope.user.login}"
                         class="input"
                         required="">
                 </br>
@@ -49,7 +49,7 @@
                         id="password"
                         name="password"
                         type="password"
-                        value="${requestScope.user.password}"
+                        value="${sessionScope.user.password}"
                         class="input"
                         required="">
                 </br>
@@ -64,23 +64,23 @@
                 </form>
             </fieldset>
         </c:if>
-    <c:if test="${sessionScope.id!=requestScope.user.id}">
+    <c:if test="${sessionScope.id!=sessionScope.user.id}">
         <fieldset class="userPage" style="margin-left: 15%">
             <form class="form-horizontal" method="post">
-                <legend class="legend">Данные пользователя: ${requestScope.user.username}</legend>
+                <legend class="legend">Данные пользователя: ${sessionScope.user.username}</legend>
                 </br>
-                <label class="legend" style="display: block;float: left;width: 80px;height: 15px;">ID: </label><input class="input" readonly name="id" value="${requestScope.user.id}">
+                <label class="legend" style="display: block;float: left;width: 80px;height: 15px;">ID: </label><input class="input" readonly name="id" value="${sessionScope.user.id}">
                 </br>
-                <label class="legend" style="display: block;float: left;width: 80px;height: 15px;">Имя: </label><input class="input" readonly name="name" value="${requestScope.user.username}">
+                <label class="legend" style="display: block;float: left;width: 80px;height: 15px;">Имя: </label><input class="input" readonly name="name" value="${sessionScope.user.username}">
                 </br>
-                <label class="legend" style="display: block;float: left;width: 80px;height: 15px;">Логин: </label><input class="input" readonly name="login" value="${requestScope.user.login}">
+                <label class="legend" style="display: block;float: left;width: 80px;height: 15px;">Логин: </label><input class="input" readonly name="login" value="${sessionScope.user.login}">
                 </br>
                 <label class="legend" style="display: block;float: left;width: 80px;height: 15px;">Пароль: </label><input class="input" style="font-style: italic" readonly name="HiddenPassword" value="Скрыто">
                 </br>
                 <label class="legend" for="role" style="display: block;float: left;width: 80px;height: 15px;">Роль: </label>
                 <select id="roleChange" name="role">
                     <c:forEach var="role" items="${applicationScope.roles}">
-                        <option value="${role}" ${role==requestScope.user.role?"selected":""}>${role}</option>
+                        <option value="${role}" ${role==sessionScope.user.role?"selected":""}>${role}</option>
                     </c:forEach>
                 </select>
                 </br>
@@ -90,19 +90,19 @@
     </c:if>
 </c:if>
 
-    <c:if test="${requestScope.quest!=null}">
-        <c:forEach var="entry" items="${requestScope.quest}">
+    <c:if test="${sessionScope.quest!=null}">
+        <c:forEach var="entry" items="${sessionScope.quest}">
             <button formmethod="post" name="page" class="btn btn-success" style="margin-top: 0;display:inline-block" value="${entry.key}">Cтраница №${entry.key}</button>
         </c:forEach>
         <button formmethod="post" name="addPage" class="btn btn-success" style="margin-top: 0;display:inline-block">Добавить страницу</button>
     </c:if>
-    <c:if test="${requestScope.pageContent!=null}">
+    <c:if test="${sessionScope.pageContent!=null}">
         </br>
         <label for="textAreaTitle" class="legend">Заголовок: </label>
-        <textarea class="textAreaTitle" id="textAreaTitle" name="textAreaTitle">${requestScope.title}</textarea>
-        <c:forEach var="question" items="${requestScope.pageContent}">
+        <textarea class="textAreaTitle" id="textAreaTitle" name="textAreaTitle">${sessionScope.title}</textarea>
+        <c:forEach var="question" items="${sessionScope.pageContent}">
             </br>
-            <label for="textAreaContent" class="legend">Вопрос №${requestScope.pageContent.indexOf(question)+1}: </label>
+            <label for="textAreaContent" class="legend">Вопрос №${sessionScope.pageContent.indexOf(question)+1}: </label>
             <textarea class="textAreaContent" id="textAreaContent" name="textAreaContent">${question.content}</textarea>
             <label for="selectQuestion" class="legend">Статус вопроса: </label>
             </br>
@@ -111,12 +111,12 @@
                 <option value="true" ${'true'==question.statusQuestion?"selected":""}>Правильный</option>
             </select>
             </br>
-            <button formmethod="post" name="deleteQuestion" class="btn btn-success" style="margin-top: 1%;display:inline-block" value="${requestScope.pageContent.indexOf(question)+1}">Удалить вопрос</button>
+            <button formmethod="post" name="deleteQuestion" class="btn btn-success" style="margin-top: 1%;display:inline-block" value="${sessionScope.pageContent.indexOf(question)+1}">Удалить вопрос</button>
         </c:forEach>
         </br>
         <button formmethod="post" name="savePage" class="btn btn-success" style="display:inline-block">Сохранить страницу</button>
         <button formmethod="post" name="addQuestion" class="btn btn-success" style="display:inline-block" value="${sessionScope.page}">Добавить вопрос</button>
-        <button formmethod="post" name="deletePage" class="btn btn-success" style="margin-top: 1%;display:inline-block" value="${requestScope.page}">Удалить страницу</button>
+        <button formmethod="post" name="deletePage" class="btn btn-success" style="margin-top: 1%;display:inline-block" value="${sessionScope.page}">Удалить страницу</button>
     </c:if>
 </form>
 </body>

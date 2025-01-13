@@ -15,6 +15,6 @@ public interface Repository {
 
     void updateUser(Long userId, String name, String login, String password, Role role);
 
-    Long getUserId(String login, String password);
+    User getUser(String login, String password);
 
 }

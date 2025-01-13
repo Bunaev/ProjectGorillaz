@@ -34,11 +34,11 @@
             <div class="col-md-8">
                 <button formmethod="post" id="enter" name="enter" value="enter" class="btn btn-success">Войти</button>
             </div>
-            <c:if test="${requestScope.authorized==false}">
+            <c:if test="${sessionScope.authorized==false}">
             <label class="error">Неверный логин или пароль!</label>
                 <a href="registration" style="font-size: 20px;" class="error">Зарегистрироваться</a>
             </c:if>
-            <c:if test="${requestScope.banned==true}">
+            <c:if test="${sessionScope.banned==true}">
                 <label class="error" style="font-size: 15px;">АККАУНТ ЗАБЛОКИРОВАН!</label>
             </c:if>
         </div>

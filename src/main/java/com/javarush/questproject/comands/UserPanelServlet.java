@@ -1,5 +1,6 @@
 package com.javarush.questproject.comands;
 
+import com.javarush.questproject.config.Summer;
 import com.javarush.questproject.entity.Game;
 import com.javarush.questproject.entity.User;
 import com.javarush.questproject.model.QuestService;
@@ -8,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -28,15 +30,19 @@ public class UserPanelServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = questService.getUser((Long) req.getSession().getAttribute("id"));
+        HttpSession session = req.getSession();
         if (req.getParameter("editProfile")!=null) {
-            req.setAttribute("user", user);
+            Summer.removeAttributesInSession(session, "games", "countPages", "loose", "winner", "gameCount");
+            session.setAttribute("user", user);
         } else if (req.getParameter("saveChangeUser")!=null) {
             questService.updateUser(user.getId(),
                     req.getParameter("name"),
                     req.getParameter("login"),
                     req.getParameter("password"),
                     user.getRole());
+            Summer.removeAttributesInSession(session, "user");
         } else if (req.getParameter("viewStatistics")!=null) {
+            Summer.removeAttributesInSession(session, "user");
             int winner = 0;
             int loose = 0;
             for (Game game : user.getGames()) {
@@ -46,14 +52,16 @@ public class UserPanelServlet extends HttpServlet {
                     loose++;
                 }
             }
-            req.setAttribute("gameCount", user.getCountCompleteGames());
-            req.setAttribute("winner", winner);
-            req.setAttribute("loose", loose);
-            req.setAttribute("countPages", questService.getQuestions().size());
-            req.setAttribute("games", user.getGames());
+            session.setAttribute("gameCount", user.getCountCompleteGames());
+            session.setAttribute("winner", winner);
+            session.setAttribute("loose", loose);
+            session.setAttribute("countPages", questService.getQuestions().size());
+            session.setAttribute("games", user.getGames());
         }
         if (req.getParameter("newGame") != null) {
             user.endGame(false);
+            Summer.removeAttributesInSession(session, "winner");
+            session.setAttribute("newGame", true);
             user.createGame();
             resp.sendRedirect("/game");
         } else if (req.getParameter("continueGame")!=null) {
@@ -62,7 +70,7 @@ public class UserPanelServlet extends HttpServlet {
             req.getSession().invalidate();
             resp.sendRedirect("/login");
         } else {
-            req.getRequestDispatcher("/WEB-INF/jsp/user-panel.jsp").forward(req, resp);
+            resp.sendRedirect("/user?id=" + user.getId());
         }
     }
 }

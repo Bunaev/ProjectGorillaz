@@ -8,7 +8,9 @@ import com.javarush.questproject.repository.Repository;
 import com.javarush.questproject.repository.UserRepository;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @NoArgsConstructor
@@ -24,14 +26,6 @@ public class QuestService implements Repository {
         return questService;
     }
 
-    public Boolean authorize(String login, String password) {
-        for (User user : userRepository.getUsers()) {
-            if (user.getLogin().equalsIgnoreCase(login) && user.getPassword().equals(password)) {
-                return true;
-            }
-        }
-        return false;
-    }
 @Override
     public ArrayList<User> getUsers() {
         return userRepository.getUsers();
@@ -45,21 +39,21 @@ public class QuestService implements Repository {
     public User getUser(Long userId) {
         return userRepository.getUser(userId);
     }
+    public User getUser(String login, String password) {
+        return userRepository.getUser(login, password);
+    }
     @Override
 
     public void updateUser(Long userId, String name, String login, String password, Role role) {
         userRepository.updateUser(userId, name, login, password, role);
     }
-    @Override
 
-    public Long getUserId(String login, String password) {
-        return userRepository.getUserId(login, password);
-    }
     public Map<Integer, ArrayList<Question>> getQuestions() {
         return questionRepository.getQuestions();
     }
-    public void deletePage(Integer key) {
-        questionRepository.deletePage(key);
+    public void deletePage(String key) {
+        Integer index = Integer.parseInt(key);
+        questionRepository.deletePage(index);
     }
     public void addPage() {
         questionRepository.addPage();
@@ -82,5 +76,14 @@ public class QuestService implements Repository {
     }
     public String getIntro() {
         return questionRepository.getIntro();
+    }
+    public String getTitle(Object key) {
+        Integer index = Integer.parseInt(String.valueOf(key));
+        return questionRepository.getQuestion(index).get(0).getContent();
+    }
+    public List<Question> getContentInPage(Object key) {
+        Integer index = Integer.parseInt(String.valueOf(key));
+        Integer sizeQuestionContent = questionRepository.getQuestion(index).size();
+        return questionRepository.getQuestion(index).subList(1, sizeQuestionContent);
     }
 }
