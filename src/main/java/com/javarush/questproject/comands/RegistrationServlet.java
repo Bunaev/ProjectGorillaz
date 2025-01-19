@@ -1,5 +1,6 @@
 package com.javarush.questproject.comands;
 
+import com.javarush.questproject.config.Summer;
 import com.javarush.questproject.entity.Role;
 import com.javarush.questproject.entity.User;
 import com.javarush.questproject.model.QuestService;
@@ -22,9 +23,15 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = new User(req.getParameter("name"), req.getParameter("login"), req.getParameter("password"));
-        user.setRole(Role.USER);
-        questService.addUser(user);
-        resp.sendRedirect("/login");
+        if (!questService.getUsers().stream().anyMatch(user -> user.getLogin().equalsIgnoreCase(req.getParameter("login")))) {
+            Summer.removeAttributesInSession(req.getSession(), "error");
+            User user = new User(req.getParameter("name"), req.getParameter("login"), req.getParameter("password"));
+            user.setRole(Role.USER);
+            questService.addUser(user);
+            resp.sendRedirect("/login");
+        } else {
+            req.getSession().setAttribute("error", "Пользователь с таким логином уже существует.");
+            resp.sendRedirect("/registration");
+        }
     }
 }

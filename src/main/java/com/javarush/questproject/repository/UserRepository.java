@@ -4,10 +4,9 @@ import com.javarush.questproject.entity.Role;
 import com.javarush.questproject.entity.User;
 import lombok.Getter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 @Getter
-public class UserRepository implements Repository {
+public class UserRepository implements URepository {
 
     private static final ArrayList<User> users = new ArrayList<>();
 

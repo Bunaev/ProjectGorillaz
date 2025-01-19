@@ -28,17 +28,6 @@ public class Game {
     public void setProgress() {
         this.progress.incrementAndGet();
     }
-
-    @Override
-    public String toString() {
-        return "Game{" +
-                "status=" + status +
-                ", dateStart='" + dateStart + '\'' +
-                ", dateFinish='" + dateFinish + '\'' +
-                ", endGame=" + endGame +
-                ", progress=" + progress +
-                '}';
-    }
 }
 
 

@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
-public class QuestionRepository {
+public class QuestionRepository implements QRepository {
     private final AtomicInteger key = new AtomicInteger(0);
     private final HashMap<Integer, ArrayList<Question>> questions = new HashMap<>();
     private String intro;
@@ -25,22 +25,38 @@ public class QuestionRepository {
         questions.put(key.incrementAndGet(), page5);
         questions.put(key.incrementAndGet(), page6);
     }
-    public List<Question> getQuestion (Integer key) {
+    @Override
+    public List<Question> getQuestion(Integer key) {
         return questions.get(key);
     }
+    @Override
     public void addPage() {
         questions.put(key.incrementAndGet(), new ArrayList<>());
         questions.get(key.get()).add(new Question());
     }
+    @Override
     public void deletePage(Integer index) {
         questions.remove(index);
         HashMap<Integer, ArrayList<Question>> tempCopy = new HashMap<>();
         key.set(0);
-        for (ArrayList<Question> values: questions.values()) {
+        for (ArrayList<Question> values : questions.values()) {
             tempCopy.put(key.incrementAndGet(), new ArrayList<>(values));
         }
         questions.clear();
         questions.putAll(tempCopy);
+    }
+    public void deleteQuestion(String key, String index) {
+        questions.get(Integer.parseInt(key)).remove(Integer.parseInt(index));
+    }
+    public void savePage(String key, String title, String [] newQuestions, String [] status) {
+        ArrayList<Question> page = new ArrayList<>();
+        page.add(new Question(title, true));
+        if (newQuestions != null) {
+            for (int i = 0; i < newQuestions.length; i++) {
+                page.add(new Question(newQuestions[i], Boolean.parseBoolean(status[i])));
+            }
+        }
+        questions.put(Integer.parseInt(key), page);
     }
     {
         intro = """

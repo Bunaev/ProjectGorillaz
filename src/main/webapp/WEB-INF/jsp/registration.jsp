@@ -49,8 +49,10 @@
                 <button formmethod="post" id="register" name="register" class="btn btn-success">Зарегистрироваться</button>
             </div>
         </div>
-
-    </fieldset>
+<c:if test="${sessionScope.error!=null}">
+    <label class="error">${sessionScope.error}</label>
+</c:if>
+</fieldset>
 </form>
 </div>
 </body>
